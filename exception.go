@@ -3,44 +3,39 @@ package tape
 import (
 	"log"
 
-	"github.com/kataras/iris"
 	"github.com/labstack/echo"
+	"github.com/tiantour/conf"
 )
 
-// OK 真假提示
-func (e *iexception) OK(ok bool, message string) {
+// OK
+func (e *exception) OK(ok bool, message interface{}) {
 	if !ok {
 		panic(message)
 	}
 }
 
-// Err 错误提示
-func (e *iexception) Err(err error, message string) {
+// Err
+func (e *exception) Err(err error, message interface{}) {
 	if err != nil {
-		if message == "" {
+		if conf.Options.Server.Debug == true {
 			message = err.Error()
 		}
 		panic(message)
 	}
 }
 
-//  Catch 抛出异常
-func (e *iexception) Catch(ctx interface{}) func() {
+// Catch
+func (e *exception) Catch(ctx echo.Context) func() {
 	return func() {
 		if r := recover(); r != nil {
-			log.Println(r)
-			switch ctx.(type) {
-			case echo.Context:
-				ctx.(echo.Context).JSON(200, H{
-					"status":  "404",
-					"message": r,
-				})
-			case *iris.Context:
-				ctx.(*iris.Context).JSON(200, H{
-					"status":  "404",
-					"message": r,
-				})
+			if conf.Options.Server.Debug == true {
+				log.Println(r)
 			}
+			ctx.(echo.Context).JSON(200, H{
+				"status":  "404",
+				"message": r,
+			})
+
 		}
 	}
 }

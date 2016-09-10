@@ -1,10 +1,12 @@
 package tape
 
 // E exception
-var E = &iexception{}
+var (
+	E = &exception{}
+)
 
 // H hash
 type (
-	H          map[string]interface{}
-	iexception struct{}
+	H         map[string]interface{}
+	exception struct{}
 )
