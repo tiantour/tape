@@ -2,9 +2,9 @@ package tape
 
 import (
 	"log"
+	"strings"
 
 	"github.com/labstack/echo"
-	"github.com/tiantour/conf"
 )
 
 // OK
@@ -17,8 +17,12 @@ func (e *exception) OK(ok bool, message interface{}) {
 // Err
 func (e *exception) Err(err error, message interface{}) {
 	if err != nil {
-		if conf.Options.Server.Debug == true {
-			message = err.Error()
+		if message == "" {
+			if strings.HasPrefix(err.Error(), "sql:") {
+				message = "数据库错误"
+			} else {
+				message = err.Error()
+			}
 		}
 		panic(message)
 	}
@@ -28,9 +32,7 @@ func (e *exception) Err(err error, message interface{}) {
 func (e *exception) Catch(ctx echo.Context) func() {
 	return func() {
 		if r := recover(); r != nil {
-			if conf.Options.Server.Debug == true {
-				log.Println(r)
-			}
+			log.Println(r)
 			ctx.(echo.Context).JSON(200, H{
 				"status":  "404",
 				"message": r,
