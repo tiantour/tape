@@ -19,7 +19,9 @@ func (e *exception) Err(err error, message interface{}) {
 	if err != nil {
 		if message == "" {
 			if strings.HasPrefix(err.Error(), "sql:") {
-				message = "数据库错误"
+				message = "数据查询失败"
+			} else if strings.HasPrefix(err.Error(), "Error 1") {
+				message = "数据查询异常"
 			} else {
 				message = err.Error()
 			}
