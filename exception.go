@@ -7,14 +7,14 @@ import (
 	"github.com/labstack/echo"
 )
 
-// OK
+// OK throw exception if !ok
 func (e *exception) OK(ok bool, message interface{}) {
 	if !ok {
 		panic(message)
 	}
 }
 
-// Err
+// Err throw exception if err!=nil
 func (e *exception) Err(err error, message interface{}) {
 	if err != nil {
 		if message == "" {
@@ -30,14 +30,14 @@ func (e *exception) Err(err error, message interface{}) {
 	}
 }
 
-// Catch
+// Catch throw exception if recover err
 func (e *exception) Catch(ctx echo.Context) func() {
 	return func() {
 		if r := recover(); r != nil {
 			log.Println(r)
-			ctx.(echo.Context).JSON(200, H{
-				"status":  "404",
-				"message": r,
+			ctx.(echo.Context).JSON(200, Hash{
+				STATUS:  FAIL,
+				MESSAGE: r,
 			})
 
 		}
