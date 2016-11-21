@@ -18,14 +18,16 @@ func (e *exception) OK(ok bool, message interface{}) {
 func (e *exception) Err(err error, message interface{}) {
 	if err != nil {
 		if message == "" {
-			if strings.HasPrefix(err.Error(), "sql:") {
+			switch {
+			case strings.HasPrefix(err.Error(), "sql:"):
 				message = "数据查询失败"
-			} else if strings.HasPrefix(err.Error(), "Error 1") {
-				message = "数据查询异常"
-			} else {
+			case strings.HasPrefix(err.Error(), "Error 1"):
+				message = "数据操作异常"
+			default:
 				message = err.Error()
 			}
 		}
+		log.Println(err.Error(), message)
 		panic(message)
 	}
 }
@@ -34,12 +36,10 @@ func (e *exception) Err(err error, message interface{}) {
 func (e *exception) Catch(ctx echo.Context) func() {
 	return func() {
 		if r := recover(); r != nil {
-			log.Println(r)
-			ctx.(echo.Context).JSON(200, Hash{
+			ctx.JSON(200, Hash{
 				STATUS:  FAIL,
 				MESSAGE: r,
 			})
-
 		}
 	}
 }
