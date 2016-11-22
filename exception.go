@@ -4,7 +4,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/labstack/echo"
+	"github.com/kataras/iris"
 )
 
 // OK throw exception if !ok
@@ -33,7 +33,7 @@ func (e *exception) Err(err error, message interface{}) {
 }
 
 // Catch throw exception if recover err
-func (e *exception) Catch(ctx echo.Context) func() {
+func (e *exception) Catch(ctx *iris.Context) func() {
 	return func() {
 		if r := recover(); r != nil {
 			ctx.JSON(200, Hash{
