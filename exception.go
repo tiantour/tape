@@ -1,55 +1,47 @@
 package tape
 
 import (
-	"github.com/kataras/iris"
+	"fmt"
+	"net/http"
+	"reflect"
+	"strings"
+
 	"github.com/labstack/echo"
 )
 
-// exception exception
-type exception struct{}
-
-// Exce new exce
-var Exce = new(exception)
-
-// Catch catch exce
-// date 2017-01-01
-// author andy.jiang
-func (e exception) Catch(ctx interface{}) func() {
-	return func() {
-		if r := recover(); r != nil {
-			switch ctx.(type) {
-			case *iris.Context:
-				ctx.(*iris.Context).JSON(200, Hash{
-					STATUS:  FAIL,
-					MESSAGE: r,
-				})
-			case echo.Context:
-				ctx.(echo.Context).JSON(200, Hash{
-					STATUS:  FAIL,
-					MESSAGE: r,
-				})
-			}
-		}
-	}
-}
-
-// OK check ok
-// date 2017-01-01
-// author andy.jiang
-func (e exception) OK(ok bool, message interface{}) {
+// OK throw exception if !ok
+func (e *exception) OK(ok bool, message interface{}) {
 	if !ok {
 		panic(message)
 	}
 }
 
-// Err check err
-// date 2017-01-01
-// author andy.jiang
-func (e exception) Err(err error, message interface{}) {
+// Err throw exception if err!=nil
+func (e *exception) Err(err error, message interface{}) {
 	if err != nil {
 		if message == "" {
-			message = err.Error()
+			switch {
+			case strings.HasPrefix(err.Error(), "sql:"):
+				message = "数据查询失败"
+			case strings.HasPrefix(err.Error(), "Error 1"):
+				message = "数据操作异常"
+			default:
+				message = err.Error()
+			}
 		}
+		fmt.Println(reflect.TypeOf(err), err.Error(), message)
 		panic(message)
+	}
+}
+
+// Catch throw exception if recover err
+func (e *exception) Catch(ctx echo.Context) func() {
+	return func() {
+		if r := recover(); r != nil {
+			ctx.(echo.Context).JSON(http.StatusOK, Hash{
+				STATUS:  FAIL,
+				MESSAGE: r,
+			})
+		}
 	}
 }
