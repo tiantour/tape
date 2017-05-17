@@ -21,10 +21,20 @@ func (e *exception) Err(err error, message interface{}) {
 	if err != nil {
 		if message == "" {
 			switch {
+			case strings.HasPrefix(err.Error(), "Error 1046"):
+				message = "查询表名错误"
+			case strings.HasPrefix(err.Error(), "Error 1049"):
+				message = "查询库名错误"
+			case strings.HasPrefix(err.Error(), "Error 1054"):
+				message = "查询列名错误"
+			case strings.HasPrefix(err.Error(), "Error 1062"):
+				message = "写入数据重复"
+			case strings.HasPrefix(err.Error(), "Error 1064"):
+				message = "查询语句错误"
 			case strings.HasPrefix(err.Error(), "sql:"):
-				message = "数据查询失败"
-			case strings.HasPrefix(err.Error(), "Error 1"):
-				message = "数据操作异常"
+				message = "查询数据失败"
+			case strings.HasPrefix(err.Error(), "code=400,message=Unmarshal type error"):
+				message = "数据类型错误"
 			default:
 				message = err.Error()
 			}
