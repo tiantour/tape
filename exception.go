@@ -38,7 +38,7 @@ func (e *exception) Err(err error, message interface{}) {
 func (e *exception) Catch(ctx echo.Context) func() {
 	return func() {
 		if r := recover(); r != nil {
-			ctx.(echo.Context).JSON(http.StatusOK, Hash{
+			ctx.JSON(http.StatusOK, Hash{
 				STATUS:  FAIL,
 				MESSAGE: r,
 			})
