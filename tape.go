@@ -8,15 +8,7 @@ const (
 	FAIL = 404
 )
 
-var (
-	// Exce exce
-	Exce = new(exception)
-)
-
 type (
-	// exception throw exception
-	exception struct{}
-
 	// Map map
 	Map map[string]interface{}
 

@@ -9,15 +9,21 @@ import (
 	"github.com/labstack/echo"
 )
 
+// Exce exce
+var Exce = new(Exception)
+
+// Exception throw exception
+type Exception struct{}
+
 // OK throw exception if !ok
-func (e *exception) OK(ok bool, message interface{}) {
+func (e Exception) OK(ok bool, message interface{}) {
 	if !ok {
 		panic(message)
 	}
 }
 
 // Err throw exception if err!=nil
-func (e *exception) Err(err error, message interface{}) {
+func (e Exception) Err(err error, message interface{}) {
 	if err != nil {
 		if message == "" {
 			switch {
@@ -45,7 +51,7 @@ func (e *exception) Err(err error, message interface{}) {
 }
 
 // Catch throw exception if recover err
-func (e *exception) Catch(ctx echo.Context) func() {
+func (e Exception) Catch(ctx echo.Context) func() {
 	return func() {
 		if r := recover(); r != nil {
 			ctx.JSON(http.StatusOK, Hash{
