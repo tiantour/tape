@@ -41,6 +41,12 @@ func (e Exception) Err(err error, message interface{}) {
 				message = "查询数据失败"
 			case strings.HasPrefix(err.Error(), "code=400,message=Unmarshal type error"):
 				message = "数据类型错误"
+			case strings.HasPrefix(err.Error(), "rpc error: code = Unavailable desc"):
+				message = "连接服务错误"
+			case strings.HasPrefix(err.Error(), "rpc error: code = Unknown desc"):
+				message = "调用服务错误"
+			case strings.HasPrefix(err.Error(), "rpc error: code = Unimplemented desc"):
+				message = "解析服务错误"
 			default:
 				message = err.Error()
 			}
