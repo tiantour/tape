@@ -16,14 +16,14 @@ var Exce = new(Exception)
 type Exception struct{}
 
 // OK throw exception if !ok
-func (e Exception) OK(ok bool, message interface{}) {
+func (e *Exception) OK(ok bool, message interface{}) {
 	if !ok {
 		panic(message)
 	}
 }
 
 // Err throw exception if err!=nil
-func (e Exception) Err(err error, message interface{}) {
+func (e *Exception) Err(err error, message interface{}) {
 	if err != nil {
 		if message == "" {
 			switch {
@@ -57,7 +57,7 @@ func (e Exception) Err(err error, message interface{}) {
 }
 
 // Catch throw exception if recover err
-func (e Exception) Catch(ctx echo.Context) func() {
+func (e *Exception) Catch(ctx echo.Context) func() {
 	return func() {
 		if r := recover(); r != nil {
 			ctx.JSON(http.StatusOK, Hash{
