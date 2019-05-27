@@ -1,4 +1,4 @@
-module github.com/tiantour/cache
+module github.com/tiantour/tape
 
 go 1.12
 
