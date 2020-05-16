@@ -1,7 +1,7 @@
 package tape
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 	"reflect"
 	"strings"
@@ -51,7 +51,7 @@ func (e *Exception) Err(err error, message interface{}) {
 				message = err.Error()
 			}
 		}
-		fmt.Println(reflect.TypeOf(err), err.Error(), message)
+		log.Println(reflect.TypeOf(err), err.Error(), message)
 		panic(message)
 	}
 }
