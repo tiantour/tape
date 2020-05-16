@@ -3,7 +3,6 @@ package tape
 import (
 	"log"
 	"net/http"
-	"reflect"
 	"strings"
 
 	"github.com/labstack/echo/v4"
@@ -51,7 +50,7 @@ func (e *Exception) Err(err error, message interface{}) {
 				message = err.Error()
 			}
 		}
-		log.Println(reflect.TypeOf(err), err.Error(), message)
+		log.Println(err.Error(), message)
 		panic(message)
 	}
 }
