@@ -1,7 +1,6 @@
 package tape
 
 import (
-	"log"
 	"net/http"
 	"strings"
 
@@ -50,7 +49,6 @@ func (e *Exception) Err(err error, message interface{}) {
 				message = err.Error()
 			}
 		}
-		log.Println(err.Error(), message)
 		panic(message)
 	}
 }
